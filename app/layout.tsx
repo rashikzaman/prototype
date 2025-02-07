@@ -3,6 +3,13 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { User } from "lucide-react";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,45 +32,53 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <nav className="bg-blue-600 text-white w-full p-4">
-          <div className="flex justify-between items-center">
-            <div className="text-2xl font-bold"><Link href="/">ACT Local</Link></div>
-            <div className="space-x-6 hidden md:flex">
-              <a href="/" className="hover:text-gray-200">
-                Home
-              </a>
-              <a href="#opportunities" className="hover:text-gray-200">
-                Opportunities
-              </a>
-              <a href="#about" className="hover:text-gray-200">
-                About
-              </a>
-              <a href="#contact" className="hover:text-gray-200">
-                Contact
-              </a>
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <link
+            href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+            rel="stylesheet"
+          />
+        </head>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <nav className="bg-blue-600 text-white w-full p-4">
+            <div className="flex justify-between items-center">
+              <div className="text-2xl font-bold">
+                <Link href="/">ACT Local</Link>
+              </div>
+              <div className="space-x-6 hidden md:flex">
+                <a href="/" className="hover:text-gray-200">
+                  Home
+                </a>
+                <a href="#about" className="hover:text-gray-200">
+                  About
+                </a>
+                <a href="#contact" className="hover:text-gray-200">
+                  Contact
+                </a>
+                <SignedIn>
+                  <a href="/tasks/me" className="hover:text-gray-200">
+                    My Tasks
+                  </a>
+                </SignedIn>
+              </div>
+              {/* Profile Icon */}
+              <div className="relative">
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
+              </div>
             </div>
-            {/* Profile Icon */}
-            <div className="relative">
-              {/* <Link href={"/tasks/me"}>
-                <User className="w-6 h-6 text-white cursor-pointer" />
-              </Link> */}
-              <Link href="/auth">Sign In / Register</Link>
-            </div>
-          </div>
-        </nav>
-        {children}
-        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-      </body>
-    </html>
+          </nav>
+          {children}
+          <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
