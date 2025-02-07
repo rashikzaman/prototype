@@ -1,15 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Editor from "react-simple-wysiwyg";
+import { FileUploadWithPreview } from "file-upload-with-preview";
+import "file-upload-with-preview/dist/style.css";
 
 const CreateVolunteerTask = () => {
-  const [html, setHtml] = useState('<div style="height: 100px">my <b>HTML</b></div>');
+  const [html, setHtml] = useState(
+    '<div style="height: 100px">my <b>HTML</b></div>'
+  );
   const categories = ["Environment", "Community", "Education", "Animals"];
 
   function onChange(e) {
     setHtml(e.target.value);
   }
+
+  useEffect(() => {
+    const upload = new FileUploadWithPreview("my-unique-id", {multiple: true, maxFileCount: 3});
+  }, []);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -60,9 +68,7 @@ const CreateVolunteerTask = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Two-column grid layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left Column */}
             <div className="space-y-4">
               <div>
                 <label className="block font-medium text-gray-700">
@@ -111,8 +117,6 @@ const CreateVolunteerTask = () => {
                 </select>
               </div>
             </div>
-
-            {/* Right Column */}
             <div className="space-y-4">
               <div>
                 <label className="block font-medium text-gray-700">
@@ -144,16 +148,17 @@ const CreateVolunteerTask = () => {
               </div>
             </div>
           </div>
-
-          {/* Full-width Description Editor */}
           <div>
             <label className="block font-medium text-gray-700">
               Description
             </label>
             <Editor value={html} onChange={onChange} />
           </div>
-
-          {/* Full-width Submit Button */}
+          <div
+            className="custom-file-container"
+            data-upload-id="my-unique-id"
+          ></div>
+          ;
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition"
