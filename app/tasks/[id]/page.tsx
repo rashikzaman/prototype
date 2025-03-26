@@ -40,18 +40,50 @@ const SinglePostPage = () => {
 
       {/* Post Image */}
       {post.imageUrl && post.imageUrl.length > 0 && (
-        <div className="mb-6">
-          <img
-            src={post.imageUrl[0]}
-            alt={post.title}
-            className="w-full h-auto object-cover rounded-lg"
-          />
+        <div>
+          <div className="grid grid-cols-5 gap-4">
+            <div>
+              <img
+                className="h-auto max-w-full rounded-lg"
+                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
+                alt=""
+              ></img>
+            </div>
+            <div>
+              <img
+                className="h-auto max-w-full rounded-lg"
+                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
+                alt=""
+              ></img>
+            </div>
+            <div>
+              <img
+                className="h-auto max-w-full rounded-lg"
+                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
+                alt=""
+              ></img>
+            </div>
+            <div>
+              <img
+                className="h-auto max-w-full rounded-lg"
+                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
+                alt=""
+              ></img>
+            </div>
+            <div>
+              <img
+                className="h-auto max-w-full rounded-lg"
+                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg"
+                alt=""
+              ></img>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Post Details */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-bold mb-4">About This Opportunity</h2>
+        <h2 className="text-xl font-bold mb-4">About This Task</h2>
         <p className="text-gray-700 mb-4">{post.description}</p>
 
         <h3 className="text-lg font-semibold mb-2">Skills Needed</h3>
@@ -64,9 +96,7 @@ const SinglePostPage = () => {
         </ul>
 
         <h3 className="text-lg font-semibold mb-2">Volunteers Needed</h3>
-        <p className="text-gray-700">
-          {post.currentVolunteers}/{post.requiredVolunteers} Volunteers
-        </p>
+        <p className="text-gray-700">{post.requiredVolunteers} Volunteers</p>
       </div>
 
       {/* Action Section */}

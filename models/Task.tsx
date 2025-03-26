@@ -1,4 +1,4 @@
-export interface PostModel {
+export interface TaskModel {
   id: number;
   title: string;
   organization: string;
