@@ -349,7 +349,7 @@ export default function useAPI() {
         }
     };
 
-    const fetchSubscriberOfTask = async (taskID: Number) => {
+    const fetchSubscriberOfTask = async (taskID: any) => {
         const token = await getToken();
 
         try {

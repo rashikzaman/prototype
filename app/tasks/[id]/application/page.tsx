@@ -11,15 +11,16 @@ const TaskApplication = () => {
   const { deleteTask, withdrawFromTask, fetchSubscriberOfTask } = useAPI();
   const router = useRouter();
   const params = useParams();
+  const id = params.id;
 
   const result = useQuery({
     queryKey: ["fetch-subscribers-of-task"],
-    queryFn: () => fetchSubscriberOfTask(params.id),
+    queryFn: () => fetchSubscriberOfTask(id),
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
   });
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: any) => {
     try {
       await deleteTask(id);
       toast("Successfully deleted the task", { type: "success" });
