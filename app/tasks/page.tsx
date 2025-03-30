@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Search, MapPin, Filter, Heart, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import Post from "@/components/Post/PostCard";
+import Task from "@/components/Task/TaskCard";
 import ReactPaginate from "react-paginate";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import useAPI from "@/api/useAPI";
@@ -19,6 +19,7 @@ const VolunteerConnect = () => {
   const [error, setError] = useState("");
   const [isRequested, setIsRequested] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // ReactPaginate uses zero-based indexing
+  const [distance, setDistance] = useState(10);
   const perPage = 10;
 
   useEffect(() => {
@@ -73,6 +74,7 @@ const VolunteerConnect = () => {
           selectedSkills,
           currentPage,
           searchTerm,
+          distance
         ],
         queryFn: () =>
           fetchTasks(currentPage + 1, perPage, {
@@ -82,6 +84,7 @@ const VolunteerConnect = () => {
             longitude: location.lng,
             is_subscribed: true,
             search_term: searchTerm,
+            distance: distance
           }),
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: true,
@@ -125,24 +128,44 @@ const VolunteerConnect = () => {
         {/* Sidebar Filters */}
         <div className="md:w-1/4">
           <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-            {!isRequested ? (
-              <div>
-                <p>We need your location to provide better service.</p>
-                <button onClick={getLocation}>Share Location</button>
+            <div className="mb-6">
+              {!isRequested ? (
+                <div>
+                  <p>We need your location to provide better service.</p>
+                  <button onClick={getLocation}>Share Location</button>
+                </div>
+              ) : error ? (
+                <div className="error">
+                  <p>
+                    We are unable to get your location. Please try again!{" "}
+                    {error}
+                  </p>
+                  <button onClick={getLocation}>Try Again</button>
+                </div>
+              ) : location ? (
+                <div></div>
+              ) : (
+                <p></p>
+              )}
+              <h3 className="text-sm font-bold mb-2">Distance (km)</h3>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  step="5"
+                  value={distance}
+                  onChange={(e) => setDistance(parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <span className="text-sm font-medium w-12 text-center">
+                  {distance}km
+                </span>
               </div>
-            ) : error ? (
-              <div className="error">
-                <p>
-                  We are unable to get your location. Please try again! {error}
-                </p>
-                <button onClick={getLocation}>Try Again</button>
-              </div>
-            ) : location ? (
-              <div></div>
-            ) : (
-              <p></p>
-            )}
+            </div>
+          </div>
 
+          <div className="bg-white p-4 rounded-lg shadow-md mb-6">
             <h3 className="text-sm font-bold mb-4">Filter by Category</h3>
             {categoriesQuery.data &&
               categoriesQuery.data.map((cat) => (
@@ -218,7 +241,7 @@ const VolunteerConnect = () => {
               <div className="masonry-wrapper">
                 <div className="masonry-grid">
                   {tasksQuery.data.records.map((opp) => (
-                    <Post key={opp.id} opp={opp} handleApply={handleApply} />
+                    <Task key={opp.id} opp={opp} handleApply={handleApply} />
                   ))}
                 </div>
               </div>

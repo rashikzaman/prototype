@@ -1,10 +1,10 @@
 import React from "react";
-import { Search, MapPin, Filter, Heart } from "lucide-react";
+import { Search, MapPin, Filter, Heart, UserIcon } from "lucide-react";
 import Link from "next/link";
 import useAPI from "@/api/useAPI";
 import { toast } from "react-toastify";
 
-export default function PostCard({ opp, handleApply }) {
+export default function TaskCard({ opp, handleApply }) {
   return (
     <div
       key={opp.id}
@@ -13,7 +13,7 @@ export default function PostCard({ opp, handleApply }) {
       {/* Volunteer Card Image */}
       {opp.media && opp.media.length > 0 && (
         <img
-          src={`${process.env.NEXT_PUBLIC_API_HOST}${opp.media[0].link}`}
+          src={`${opp.media[0].link}`}
           alt={opp.title}
           className="w-full h-auto object-cover rounded-md mb-4"
           width={"100"}
@@ -24,6 +24,11 @@ export default function PostCard({ opp, handleApply }) {
       <h2 className="text-xl font-bold text-blue-700 mb-2">
         <Link href={`/tasks/${opp.id}`}>{opp.title}</Link>
       </h2>
+
+      <div className="flex items-center text-gray-500 mb-3">
+        <UserIcon className="mr-2 w-5 h-5" />
+        <span>{opp.user.first_name + " " + opp.user.last_name}</span>
+      </div>
 
       <div className="flex items-center text-gray-500 mb-3">
         <MapPin className="mr-2 w-5 h-5" />

@@ -7,6 +7,7 @@ export interface queryParam {
     longitude: string;
     is_subscribed: boolean;
     search_term: string;
+    distance: number;
 }
 
 export default function useAPI() {
@@ -126,6 +127,10 @@ export default function useAPI() {
 
             if (queryParam.search_term != "") {
                 url = url + "&search_term=" + queryParam.search_term;
+            }
+
+            if (queryParam.distance) {
+                url = url + "&distance=" + queryParam.distance;
             }
 
             const response = await fetch(
@@ -377,6 +382,152 @@ export default function useAPI() {
         }
     };
 
+    const fetchTasksForAdmin = async (
+        page: Number = 1,
+        perPage: Number = 10,
+    ) => {
+        try {
+            const token = await getToken();
+            let url =
+                `${process.env.NEXT_PUBLIC_API_HOST}/admin/tasks?page=${page}&per_page=${perPage}`;
+
+            const response = await fetch(
+                url,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (!response.ok) {
+                return null;
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            // Handle errors
+            console.error("Error creating volunteer task:", error);
+            return null;
+        }
+    };
+
+    const fetchUsersForAdmin = async (
+        page: Number = 1,
+        perPage: Number = 10,
+    ) => {
+        try {
+            const token = await getToken();
+            let url =
+                `${process.env.NEXT_PUBLIC_API_HOST}/admin/users?page=${page}&per_page=${perPage}`;
+
+            const response = await fetch(
+                url,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (!response.ok) {
+                return null;
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            // Handle errors
+            console.error("Error creating volunteer task:", error);
+            return null;
+        }
+    };
+
+    const applyActionToUserByAdmin = async (userID: string, action: string) => {
+        const token = await getToken();
+
+        try {
+            // Submit the form data to the API
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_HOST}/admin/users/${userID}/${action}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (!(response.status == 200)) {
+                throw new Error("Failed to apply action to the user");
+            }
+        } catch (error) {
+            console.error("Failed to apply action to the user:", error);
+            throw new Error("Failed to apply action to the user");
+        }
+    };
+
+    const applyActionToTaskByAdmin = async (taskID: string, action: string) => {
+        const token = await getToken();
+
+        try {
+            // Submit the form data to the API
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_HOST}/admin/tasks/${taskID}/${action}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                },
+            );
+
+            if (!(response.status == 200)) {
+                throw new Error("Failed to apply action to the task");
+            }
+        } catch (error) {
+            console.error("Failed to apply action to the task:", error);
+            throw new Error("Failed to apply action to the task");
+        }
+    };
+
+    const updateProfile = async (data: any) => {
+        const token = await getToken();
+
+        try {
+            // Submit the form data to the API
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_HOST}/users/me`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                    }),
+                },
+            );
+
+            if (!(response.status == 200)) {
+                throw new Error("Failed to create volunteer task");
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Error creating volunteer task:", error);
+            throw new Error("Failed to create volunteer task");
+        }
+    };
+
     return {
         fetchCategories,
         createTask,
@@ -389,6 +540,11 @@ export default function useAPI() {
         withdrawFromTask,
         fetchTasksCreatedByUser,
         fetchTasksSubscribedByUser,
-        fetchSubscriberOfTask
+        fetchSubscriberOfTask,
+        fetchTasksForAdmin,
+        fetchUsersForAdmin,
+        applyActionToUserByAdmin,
+        applyActionToTaskByAdmin,
+        updateProfile,
     };
 }

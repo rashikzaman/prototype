@@ -83,7 +83,7 @@ const TaskTable = () => {
               : "border-gray-300 text-gray-600"
           }`}
         >
-          Tasks I&aposm; Involved In
+          Tasks I&apos;m Involved In
         </button>
       </div>
 
@@ -122,37 +122,39 @@ const TaskTable = () => {
                 <td className="border border-gray-300 px-4 py-2">
                   {task.subscribed_users ? task.subscribed_users.length : 0}
                 </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
+                <td className="border border-gray-300 px-4 py-2">
                   {activeTab === "created" ? (
-                    <>
+                    <div className="flex justify-center items-center space-x-2">
                       <button
                         onClick={() =>
                           router.push(`/tasks/${task.id}/application`)
                         }
-                        className="text-green-600 hover:text-green-800 mr-2"
+                        className="text-green-600 hover:text-green-800 p-1"
                       >
-                        <BookText className="inline w-5 h-5" />
+                        <BookText className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleEdit(task.id)}
-                        className="text-blue-600 hover:text-blue-800 mr-2"
+                        className="text-blue-600 hover:text-blue-800 p-1"
                       >
-                        <Pencil className="inline w-5 h-5" />
+                        <Pencil className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(task.id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600 hover:text-red-800 p-1"
                       >
-                        <Trash className="inline w-5 h-5" />
+                        <Trash className="w-5 h-5" />
                       </button>
-                    </>
+                    </div>
                   ) : (
-                    <button
-                      onClick={() => handleWithdraw(task.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
-                    >
-                      Withdraw Application
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => handleWithdraw(task.id)}
+                        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
+                      >
+                        Withdraw Application
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>

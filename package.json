@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.10.6",
     "@tanstack/react-query": "^5.69.0",
+    "context": "^3.0.33",
     "file-upload-with-preview": "^6.1.2",
     "lucide-react": "^0.468.0",
     "next": "15.1.0",

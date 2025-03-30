@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { User } from "lucide-react";
 import {
   ClerkProvider,
   SignInButton,
@@ -10,14 +9,11 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
-import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
+import { ReactQueryClientProvider } from "@/components/Provider/ReactQueryClientProvider";
+import { UserProvider } from "@/components/Provider/UserProvider";
 import { ToastContainer, toast } from "react-toastify";
+import { auth } from "@clerk/nextjs/server";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,67 +31,138 @@ export const metadata: Metadata = {
 };
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-const queryClient = new QueryClient();
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getUser();
+
   return (
     <ClerkProvider>
       <ReactQueryClientProvider>
-        <html lang="en">
-          <head>
-            <link
-              href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
-              rel="stylesheet"
-            />
-          </head>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            <nav className="bg-blue-600 text-white w-full p-4">
-              <div className="flex justify-between items-center">
-                <div className="text-2xl font-bold">
-                  <Link href="/tasks">ACT Local</Link>
-                </div>
-                <div className="space-x-6 hidden md:flex">
-                  <a href="/tasks" className="hover:text-gray-200">
-                    Home
-                  </a>
-                  <a href="#about" className="hover:text-gray-200">
-                    About
-                  </a>
-                  <a href="#contact" className="hover:text-gray-200">
-                    Contact
-                  </a>
-                  <SignedIn>
-                    <a href="/tasks/me" className="hover:text-gray-200">
-                      My Tasks
-                    </a>
-                  </SignedIn>
-                </div>
-                {/* Profile Icon */}
-                <div className="relative">
-                  <SignedOut>
-                    <SignInButton />
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton />
-                  </SignedIn>
-                </div>
+        <UserProvider initialUser={user}>
+          <html lang="en">
+            <head>
+              <link
+                href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+                rel="stylesheet"
+              />
+            </head>
+            <body
+              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+              <div className="flex flex-col min-h-screen">
+                <Navbar user={user} />
+                <main className="flex-grow">{children}</main>
+                <footer className="bg-blue-600 text-white py-8">
+                  <div className="container mx-auto px-4">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                      <div className="mb-4 md:mb-0">
+                        <h2 className="text-2xl font-bold">ACT Local</h2>
+                        <p className="mt-2">
+                          Making a difference in your community
+                        </p>
+                      </div>
+                      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
+                        <div>
+                          <h3 className="font-semibold text-lg mb-2">Links</h3>
+                          <ul className="space-y-2">
+                            <li>
+                              <a href="#about" className="hover:text-gray-200">
+                                About
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="#contact"
+                                className="hover:text-gray-200"
+                              >
+                                Contact Us
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg mb-2">
+                            Connect
+                          </h3>
+                          <ul className="space-y-2">
+                            <li>
+                              <a href="#" className="hover:text-gray-200">
+                                Twitter
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#" className="hover:text-gray-200">
+                                Facebook
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#" className="hover:text-gray-200">
+                                Instagram
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-t border-blue-500 mt-8 pt-6 text-center">
+                      <p>
+                        &copy; {new Date().getFullYear()} ACT Local. All rights
+                        reserved.
+                      </p>
+                    </div>
+                  </div>
+                </footer>
               </div>
-            </nav>
-            {children}
-            <ToastContainer />
-            <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-            <script
-              src={`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`}
-            ></script>
-          </body>
-        </html>
+              <ToastContainer />
+              <script
+                async
+                src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"
+              ></script>
+              <script
+                async
+                src={`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`}
+              ></script>
+            </body>
+          </html>
+        </UserProvider>
       </ReactQueryClientProvider>
     </ClerkProvider>
   );
+}
+
+async function getUser() {
+  const { userId, getToken } = await auth();
+
+  const token = await getToken();
+  let result = null;
+
+  try {
+    // Submit the form data to the API
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/users/me`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!(response.status == 200)) {
+      console.log(response.status);
+    }
+
+    result = await response.json();
+
+    console.log('result', result)
+
+    return result;
+  } catch (error) {
+    console.error("failed to fetch tasks for admin:", error);
+  }
 }
