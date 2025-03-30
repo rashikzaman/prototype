@@ -7,7 +7,7 @@ import useAPI from "@/api/useAPI";
 import { useQueries } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import TaskForm from "@/components/Task/PostForm";
+import TaskForm from "@/components/Task/TaskForm";
 
 const EditVolunteerTask = () => {
   const { updateTask, fetchTask, fetchCategories } = useAPI();
