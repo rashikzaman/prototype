@@ -70,13 +70,13 @@ export default async function RootLayout({
                           <h3 className="font-semibold text-lg mb-2">Links</h3>
                           <ul className="space-y-2">
                             <li>
-                              <a href="#about" className="hover:text-gray-200">
+                              <a href="/about" className="hover:text-gray-200">
                                 About
                               </a>
                             </li>
                             <li>
                               <a
-                                href="#contact"
+                                href="/contact-us"
                                 className="hover:text-gray-200"
                               >
                                 Contact Us
