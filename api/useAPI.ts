@@ -88,12 +88,12 @@ export default function useAPI() {
                 },
             );
 
-            if (!(response.status == 201)) {
-                throw new Error("Failed to create volunteer task");
+            if (!(response.status == 200)) {
+                throw new Error("Failed to update volunteer task");
             }
         } catch (error) {
-            console.error("Error creating volunteer task:", error);
-            throw new Error("Failed to create volunteer task");
+            console.error("Error creating update task:", error);
+            throw new Error("Failed to update volunteer task");
         }
     };
 
