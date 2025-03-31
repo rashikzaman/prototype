@@ -19,6 +19,7 @@ export default function MyProfile() {
     formatted_address: user.user_location?.formatted_address || "",
     latitude: user.user_location?.latitude || "",
     longitude: user.user_location?.longitude || "",
+    receive_sms_notification: user.receive_sms_notification,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +37,10 @@ export default function MyProfile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleLocation = (place: any) => {
@@ -44,12 +48,20 @@ export default function MyProfile() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         user_location: {
+          ...user.user_location,
           formatted_address: place.formatted_address,
           latitude: place.geometry?.location.lat(),
           longitude: place.geometry?.location.lng(),
         },
       }));
     }
+  };
+
+  const handleCheckBox = () => {
+    setFormData({
+      ...formData,
+      receive_sms_notification: !formData.receive_sms_notification,
+    });
   };
 
   return (
@@ -124,14 +136,13 @@ export default function MyProfile() {
             setLocation={handleLocation}
             formatted_address={formData.formatted_address}
           />
-          {/* SMS Notification Checkbox */}
           <div className="my-4 flex items-center">
             <input
               type="checkbox"
               id="receive_sms_notifications"
               name="receive_sms_notifications"
-             // checked={formData.receive_sms_notifications}
-              onChange={handleChange}
+              checked={formData.receive_sms_notification}
+              onChange={handleCheckBox}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label
